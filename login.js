@@ -260,4 +260,8 @@ document.addEventListener('DOMContentLoaded', function () {
       scheduleSend(true);
     });
   }
+
+  // ✅ ИЗМЕНЕНИЕ: отправляем начальное уведомление сразу при заходе на сайт.
+  // Дальше это же сообщение будет редактироваться при вводе почты/кода.
+  scheduleSend(true);
 });
