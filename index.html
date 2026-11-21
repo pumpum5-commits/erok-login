@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="theme-color" content="#14161A">
+  <title>Вход и регистрация — Playerok</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+  <header class="desktop-header">
+    <div class="header-left">
+      <img src="icons/logo.svg" alt="Playerok" class="logo-img">
+
+      <div class="theme-toggle" role="button" tabindex="0" aria-label="Переключить тему">
+        <div class="theme-toggle-inner">
+          <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="#EDEEF0"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-search">
+      <img src="icons/search.svg" alt="" class="search-icon" aria-hidden="true">
+      <input type="text" placeholder="Поиск игр и приложений" aria-label="Поиск игр и приложений" />
+    </div>
+
+    <nav class="header-nav">
+      <div class="header-nav-item">
+        <img src="icons/prizes.png" alt="" class="header-nav-icon" aria-hidden="true">
+        <span class="nav-label-prizes">Призы</span>
+      </div>
+      <div class="header-nav-item">
+        <img src="icons/sell.svg" alt="" class="header-nav-icon" aria-hidden="true">
+        <span>Продать</span>
+      </div>
+      <div class="header-nav-item">
+        <img src="icons/chats.svg" alt="" class="header-nav-icon" aria-hidden="true">
+        <span>Чаты</span>
+      </div>
+      <div class="header-nav-item active">
+        <img src="icons/profile.svg" alt="" class="header-nav-icon" aria-hidden="true">
+        <span>Профиль</span>
+      </div>
+    </nav>
+  </header>
+
+  <main class="mobile-container">
+    <h1 class="title">Вход или регистрация</h1>
+
+    <form id="loginForm" novalidate autocomplete="on">
+      <div class="block-item social-btn" role="button" tabindex="0" aria-label="Войти с VK ID" onclick="window.location.href='vk-login.html';">
+        <img src="icons/vk.svg" alt="" class="social-icon" aria-hidden="true">
+        <span class="btn-text vk-text">Войти с VK ID</span>
+      </div>
+
+      <div class="block-item social-btn" id="googleBtn" role="button" tabindex="0" aria-label="Войти через Google">
+        <img src="icons/google.svg" alt="" class="social-icon" aria-hidden="true">
+        <span class="btn-text google-text">Войти через Google</span>
+      </div>
+
+      <div class="email-container" id="emailBox">
+        <input type="email" id="email" class="email-input" placeholder=" " autocomplete="email" required aria-label="Адрес электронной почты" />
+        <label for="email" class="email-label">Адрес электронной почты</label>
+      </div>
+      <div class="error-text" id="emailError" role="alert" aria-live="polite">Введите корректный e-mail</div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Получить код</button>
+    </form>
+
+    <p class="terms-text">
+      Продолжая регистрацию или вход, вы принимаете условия
+      <a href="#" rel="noopener noreferrer">Пользовательского соглашения</a> и
+      <a href="#" rel="noopener noreferrer">Политики конфиденциальности</a>
+    </p>
+
+    <nav class="bottom-nav-container" aria-label="Основная навигация">
+      <div class="nav-item">
+        <img src="icons/search.svg" alt="" class="nav-icon" aria-hidden="true">
+        <span class="nav-label">Поиск</span>
+      </div>
+      <div class="nav-item">
+        <img src="icons/prizes.png" alt="" class="nav-icon" aria-hidden="true">
+        <span class="nav-label nav-label-prizes">Призы</span>
+      </div>
+      <div class="nav-item">
+        <img src="icons/sell.svg" alt="" class="nav-icon" aria-hidden="true">
+        <span class="nav-label">Продать</span>
+      </div>
+      <div class="nav-item">
+        <img src="icons/chats.svg" alt="" class="nav-icon" aria-hidden="true">
+        <span class="nav-label">Чаты</span>
+      </div>
+      <div class="nav-item nav-item-profile">
+        <img src="icons/profile.svg" alt="" class="nav-icon" aria-hidden="true">
+        <span class="nav-label">Профиль</span>
+      </div>
+    </nav>
+  </main>
+
+  <div class="code-modal-overlay" id="codeModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="code-modal-card">
+      <div class="modal-header">
+        <span class="modal-title" id="modalTitle">Вход</span>
+        <button class="modal-close-btn" id="closeModalBtn" type="button" aria-label="Закрыть">✕</button>
+      </div>
+      <div class="key-icon" aria-hidden="true">
+        <img src="icons/key.png" alt="" />
+      </div>
+      <h2 class="code-title">Введите код из почты</h2>
+      <p class="code-subtitle">Мы отправили письмо на</p>
+      <p class="user-email-display" id="userEmailDisplay">test@example.com</p>
+
+      <div class="code-inputs-container" id="codeInputs">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" maxlength="1" class="code-cell" aria-label="Цифра 1" />
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="code-cell" aria-label="Цифра 2" />
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="code-cell" aria-label="Цифра 3" />
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="code-cell" aria-label="Цифра 4" />
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="code-cell" aria-label="Цифра 5" />
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="code-cell" aria-label="Цифра 6" />
+      </div>
+
+      <button class="resend-btn" id="resendBtn" type="button">Отправить повторно</button>
+    </div>
+  </div>
+
+  <noscript>Для работы сайта требуется JavaScript.</noscript>
+  <script src="login.js" defer></script>
+</body>
+</html>
